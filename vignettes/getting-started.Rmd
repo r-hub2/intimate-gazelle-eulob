@@ -1,0 +1,169 @@
+---
+title: "Getting Started with eulob"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with eulob}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+# Introduction
+
+`eulob` provides offline access to EU-LOB, a catalogue of names
+and entries from European lobbying and transparency registers.
+
+The catalogue contains 19 territorial scopes and 21 registers.
+Its entries should not automatically be interpreted as unique
+legal organizations.
+
+# Load the package
+
+```{r}
+library(eulob)
+eulob_version()
+```
+
+# Explore countries and registers
+
+List territorial coverage and available registers.
+
+```{r}
+head(eulob_countries())
+head(eulob_registers())
+```
+
+The code `UE` represents the supranational EU Transparency
+Register and is not an ISO country code.
+
+Filter the catalogue by country:
+
+```{r}
+eulob_registers(country = "IT")
+eulob_sources(country = "ES")
+```
+
+`eulob_sources()` reports register-level counts using the
+existing catalogue indexes.
+
+# Retrieve lobbying register entries
+
+`eulob_lobbies()` returns names and identifiers from the
+selected territorial scope or register.
+
+```{r}
+spanish <- eulob_lobbies(country = "ES")
+head(spanish, 5)
+```
+
+An individual entry can be retrieved by its source-specific
+identifier:
+
+```{r}
+if (nrow(spanish) > 0L) {
+  entry <- spanish[1L, ]
+  head(eulob_get(
+    country = entry$country,
+    lobby_id = entry$lobby_id,
+    register = entry$register
+  ))
+}
+```
+
+# Search for organization names
+
+The default search uses cosine similarity over character
+bigrams:
+
+```{r}
+head(eulob_search("association", limit = 5))
+head(eulob_search("universidad", country = "ES", limit = 5))
+```
+
+For case-insensitive literal substring matching, select
+`method = "fixed"`:
+
+```{r}
+head(eulob_search(
+  "universidad",
+  method = "fixed",
+  limit = 5
+))
+```
+
+Additional approximate name-search methods include Jaccard,
+Jaro-Winkler and Damerau-Levenshtein.
+
+These methods compare text, not semantic representations or
+verified legal identities.
+
+# Search normalized-name candidates
+
+`eulob_search_normalized()` searches a separate bundled
+candidate index.
+
+It supports three modes:
+
+- `strict`: strict normalized-name candidates.
+- `exploratory`: exploratory candidate matching.
+- `both`: both candidate categories.
+
+```{r}
+head(eulob_search_normalized(
+  "association",
+  method = "strict",
+  limit = 5
+))
+```
+
+Candidate results are intended to assist manual assessment.
+They are not evidence of verified legal identity.
+
+# Find shared names across registers
+
+`eulob_cross_registers()` identifies names appearing across
+multiple territorial scopes.
+
+```{r}
+head(eulob_cross_registers(
+  min_countries = 2L,
+  limit = 5L
+))
+```
+
+Names appearing in several registers are not necessarily
+the same legal organization.
+
+# Understand identifiers
+
+The catalogue distinguishes:
+
+- `name_id`: identifier for a normalized name.
+- `name_normalized`: normalized name representation.
+- `name`: recorded name.
+- `country`: territorial or supranational scope.
+- `register`: source register.
+- `lobby_id`: register-specific identifier.
+
+Some register identifiers originate from official registration
+systems; others are derived from source records.
+
+Identifiers should always be interpreted within their
+corresponding register.
+
+# Reproducibility
+
+The bundled catalogue can be queried without an internet
+connection. Record the package version, search methods and
+filters used in any analysis.
+
+```{r}
+eulob_info()
+eulob_version()
+```
+
+For details on the indexing structure and methodological
+limitations, see *Understanding the EU-LOB Catalogue*.

@@ -1,0 +1,41 @@
+Package: eulob
+Title: European Union Lobbying Organizations Database
+Version: 0.2.1
+Depends: R (>= 3.5.0)
+Authors@R: c(person(
+    given = "Aritz",
+    family = "Gorostiza Cerviño",
+    role = c("aut", "cre"),
+    email = "olivetti03@uma.es"
+    ),
+    person(
+        given = "Juan Luis",
+        family = "Castro Peña",
+        role = "aut"
+    ),
+    person(
+        given = "Antonio",
+        family = "Castillo Esparcia",
+        role = "ctb"
+    )
+    )
+Description: Provides a bundled catalogue of lobbying organizations
+    recorded in national and European transparency registers.
+    Supports queries by country and register, retrieval of register
+    entries, identification of names occurring across registers,
+    and literal and approximate name searches. Includes normalized
+    name matching and exploratory candidate retrieval for
+    comparative research on registered interest groups.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Imports: data.table, stringdist, stringi
+Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
+Config/roxygen2/version: 8.1.1
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+NeedsCompilation: no
+Packaged: 2026-11-11 17:05:27 UTC; slurm_user
+Author: Aritz Gorostiza Cerviño [aut, cre],
+  Juan Luis Castro Peña [aut],
+  Antonio Castillo Esparcia [ctb]
+Maintainer: Aritz Gorostiza Cerviño <olivetti03@uma.es>
